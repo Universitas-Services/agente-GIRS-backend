@@ -1,0 +1,29 @@
+{
+  "additionalInterfaces": null,
+  "capabilities": {
+    "extensions": null,
+    "pushNotifications": null,
+    "stateTransitionHistory": null,
+    "streaming": null
+  },
+  "defaultInputModes": [
+    "text"
+  ],
+  "defaultOutputModes": [
+    "text"
+  ],
+  "description": "Agente GIRS API",
+  "documentationUrl": null,
+  "iconUrl": null,
+  "name": "agente-girs",
+  "preferredTransport": "JSONRPC",
+  "protocolVersion": "0.3.0",
+  "provider": null,
+  "security": null,
+  "securitySchemes": null,
+  "signatures": null,
+  "skills": [],
+  "supportsAuthenticatedExtendedCard": null,
+  "url": "https://agente-girs-529295899189.us-east1.run.app/a2a/app",
+  "version": "1.0.0"
+}

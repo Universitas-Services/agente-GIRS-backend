@@ -1,0 +1,13 @@
+.venv/
+.venv
+__pycache__/
+*.pyc
+.git/
+.gitignore
+.agent/
+tests/
+deployment/
+deployment_handover.md
+build_logs.json
+logs.json
+raw_logs.txt
