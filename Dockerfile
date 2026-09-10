@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Debe coincidir con requires-python ==3.11.* en pyproject.toml
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 RUN pip install --no-cache-dir uv==0.8.13
 
@@ -23,15 +22,7 @@ COPY ./pyproject.toml ./README.md ./uv.lock* ./
 
 COPY ./app ./app
 
-RUN uv sync
-
-# Parche ADK (ruta del venv puede variar por minor de Python).
-RUN find .venv -path '*/google/adk/cli/fast_api.py' -print -exec \
-    sed -i 's/data = json.load(f)/import json; data = json.load(f)/' {} \; \
-    || echo "ADK fast_api.py patch skipped (file not found)"
-
-ARG COMMIT_SHA=""
-ENV COMMIT_SHA=${COMMIT_SHA}
+RUN uv sync --frozen
 
 ARG AGENT_VERSION=0.0.0
 ENV AGENT_VERSION=${AGENT_VERSION}
