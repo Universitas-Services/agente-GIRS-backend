@@ -15,13 +15,13 @@ import logging
 import os
 from typing import Any
 
-# Must be set before any Google / ADK / Vertex imports (session service reads these at init).
-os.environ["GOOGLE_CLOUD_PROJECT"] = "agente-manual-contrataciones"
-os.environ["GOOGLE_CLOUD_LOCATION"] = "us-east1"
-os.environ["GOOGLE_CLOUD_AGENT_ENGINE_ID"] = "5015972045914112000"
+from dotenv import load_dotenv
+
+# Debe cargarse antes de imports de Google / ADK / Vertex (leen env al init).
+# No forzar PROJECT/LOCATION: el runtime o el .env los proveen.
+load_dotenv()
 
 import vertexai
-from dotenv import load_dotenv
 from google.adk.artifacts import GcsArtifactService, InMemoryArtifactService
 from google.cloud import logging as google_cloud_logging
 from vertexai.agent_engines.templates.adk import AdkApp
@@ -29,9 +29,6 @@ from vertexai.agent_engines.templates.adk import AdkApp
 from app.agent import app as adk_app
 from app.app_utils.telemetry import setup_telemetry
 from app.app_utils.typing import Feedback
-
-# Load environment variables from .env file at runtime
-load_dotenv()
 
 
 class AgentEngineApp(AdkApp):

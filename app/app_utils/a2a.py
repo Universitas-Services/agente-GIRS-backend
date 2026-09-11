@@ -131,7 +131,7 @@ def _resolve_app_url(app_url: str | None) -> str:
     project = os.getenv("GOOGLE_CLOUD_PROJECT")
     # Not GOOGLE_CLOUD_LOCATION: the agent pins it to "global", which would build
     # an invalid "global-aiplatform.googleapis.com" URL.
-    location = os.getenv("GOOGLE_CLOUD_AGENT_ENGINE_LOCATION", "us-east1")
+    location = os.getenv("GOOGLE_CLOUD_AGENT_ENGINE_LOCATION", "us-central1")
     if agent_engine_id and project and location:
         return (
             f"https://{location}-aiplatform.googleapis.com/reasoningEngines/v1"
@@ -174,7 +174,7 @@ async def attach_a2a_routes(
     ).build()
 
     request_handler = DefaultRequestHandler(
-        agent_executor=A2aAgentExecutor(runner=runner),
+        agent_executor=A2aAgentExecutor(runner=runner, force_new_version=True),
         task_store=task_store,
         agent_card=agent_card,
     )

@@ -1,9 +1,12 @@
 # ruff: noqa
 import os
 
-os.environ["GOOGLE_CLOUD_PROJECT"] = "agente-manual-contrataciones"
-os.environ["GOOGLE_CLOUD_LOCATION"] = "us-east1"
-os.environ["GOOGLE_CLOUD_AGENT_ENGINE_ID"] = "5015972045914112000"
+from dotenv import load_dotenv
+
+# Cargar .env antes de cualquier import de Google/ADK.
+# No sobrescribir variables ya inyectadas por el runtime (Agent Engine / Cloud Run).
+load_dotenv()
+
 if "GEMINI_API_KEY" in os.environ:
     os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "False"
 else:
@@ -24,12 +27,33 @@ def Normativas_GIRS(query: str) -> str:
     ordenanzas municipales o regulaciones sobre gestión integral de residuos y desechos sólidos.
     """
     try:
-        project_id = "agente-manual-contrataciones"
-        location = "global"
-        engine_id = "app-girs-prueba_1785184128772"
+        project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+        location = os.environ.get("DISCOVERY_ENGINE_LOCATION", "global")
+        engine_id = os.environ.get("ENGINE_ID")
+
+        if not project_id:
+            return (
+                "Error de configuración: falta GOOGLE_CLOUD_PROJECT. "
+                "Define la variable de entorno del proyecto GCP."
+            )
+        if not engine_id:
+            return (
+                "Error de configuración: falta ENGINE_ID. "
+                "Define el ID de la App / Engine de Vertex AI Search."
+            )
 
         from google.api_core import client_options
-        client_opts = client_options.ClientOptions(quota_project_id=project_id)
+
+        # Location distinta de "global" exige endpoint regional (ej. us-discoveryengine...).
+        api_endpoint = (
+            None
+            if location == "global"
+            else f"{location}-discoveryengine.googleapis.com"
+        )
+        client_opts = client_options.ClientOptions(
+            quota_project_id=project_id,
+            api_endpoint=api_endpoint,
+        )
         client = discoveryengine.SearchServiceClient(client_options=client_opts)
         # Construir ruta manualmente para usar un Engine en vez de DataStore
         serving_config = f"projects/{project_id}/locations/{location}/collections/default_collection/engines/{engine_id}/servingConfigs/default_config"
